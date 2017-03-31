@@ -9,13 +9,14 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JPanel;
 
 /**
  *
  * @author wilver
  */
 public class Utileria {    
-    public void abriVentana(JInternalFrame internalFrame, JDesktopPane jdpContenedor)
+    public static void abriVentana(JInternalFrame internalFrame, JDesktopPane jdpContenedor)
     {
         jdpContenedor.add(internalFrame);
         //Dimension desktopSize = jdpContenedor.getSize();
