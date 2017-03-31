@@ -15,6 +15,7 @@ import gb090091_hs110065.EstudianteNotasTableModel;
 import gb090091_hs110065.conexion;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -42,16 +43,20 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         this.jcbPeriodo.setEnabled(false);
         this.jcbActividad.setEnabled(false);
         this.jbtnProcesar.setEnabled(false);
-        this.jTableEstudianteNotas.setModel(SourceEstudiantesNotas = new EstudianteNotasTableModel() );
+        this.jTableEstudianteNotas.setModel(SourceEstudiantesNotas = new EstudianteNotasTableModel());
     }
 
     public List<EstudianteNotas> getEstudianteNotas() {
         if (_gActividades != null) {
             conexion con = new conexion();
-            List<EstudianteNotas> Estudiantes = con.getEstudiantesMateriaDocente(_gidMateriaSeleccionada);
-            if (Estudiantes != null) {
-                return Estudiantes;
+            if (con.checkNotasRegistradas(_gidActividadSeleccionada)) {
+                con = new conexion();
+                List<EstudianteNotas> Estudiantes = con.getEstudiantesMateriaDocente(_gidMateriaSeleccionada);
+                if (Estudiantes != null) {
+                    return Estudiantes;
+                }
             }
+
         }
         return null;
     }
@@ -108,8 +113,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         jbtnProcesar.setEnabled(false);
         jcbActividad.setEnabled(false);
         return new String[0];
-    }   
-
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -247,9 +251,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
             if (Aux != null) {
                 SourceEstudiantesNotas = new EstudianteNotasTableModel(getEstudianteNotas());
                 jTableEstudianteNotas.setModel(SourceEstudiantesNotas);
-            } 
-            else
-            {
+            } else {
                 SourceEstudiantesNotas.clear();
             }
         }
@@ -270,13 +272,21 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
 
     private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
         SourceEstudiantesNotas.fireTableDataChanged();
-        List<Notas> NotasEstudiantes = new ArrayList<Notas>(); 
+        List<Notas> NotasEstudiantes = new ArrayList<Notas>();
         List<EstudianteNotas> ToSave = SourceEstudiantesNotas.getEstudiantes();
-        conexion conn = new conexion();
-        for (int i = 0; i < ToSave.size(); i++) {
-            NotasEstudiantes.add(new Notas(0,_gidActividadSeleccionada,ToSave.get(i).getIdEstudiante(),ToSave.get(i).getValor()));
+        if (ToSave.size() == 0) return;
+        boolean Invalid = ToSave.stream().filter(par -> par.getValor() == null).findFirst().isPresent();
+        if (Invalid) {
+            JOptionPane.showMessageDialog(null, "Faltan notas por ingresar");
+        } else {
+            conexion conn = new conexion();
+            for (int i = 0; i < ToSave.size(); i++) {
+                NotasEstudiantes.add(new Notas(0, _gidActividadSeleccionada, ToSave.get(i).getIdEstudiante(), ToSave.get(i).getValor()));
+            }
+            conn.setEstudiantesNotas(NotasEstudiantes);            
+            SourceEstudiantesNotas.clear();
         }
-        String msg = conn.setEstudiantesNotas(NotasEstudiantes);
+
     }//GEN-LAST:event_jbtnGuardarActionPerformed
 
 

@@ -160,12 +160,15 @@ public class conexion {
             }
             return lista;
         } catch (Exception ex) {
-
+            System.out.println(ex.getMessage());
         }
         return null;
     }
 
-    public String setEstudiantesNotas(List<Notas> NotasEstudiantes) {
+    public void setEstudiantesNotas(List<Notas> NotasEstudiantes) {
+        if (NotasEstudiantes.size() < 0) {
+            return;
+        }
         String query = "select Max(notas.idNotas) as corr from notas";
         int corr = 0;
         try {
@@ -188,11 +191,32 @@ public class conexion {
             pstmt.executeBatch();            
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
-            return "Error al Guardar Notas, Codigo: " + ex.getErrorCode();
+            JOptionPane.showMessageDialog(null,  "Error al Guardar Notas, Codigo: " + ex.getErrorCode());
+            return;
         } catch (Exception ex) {
-            return "Error Desconocido Contante a Soporte Tecnico";
+            JOptionPane.showMessageDialog(null,"Error Desconocido Contante a Soporte Tecnico");
+            return;
         }        
-        return "Notas Guardadas";
+        JOptionPane.showMessageDialog(null,"Notas Guardadas");
+    }
+
+    public boolean checkNotasRegistradas(int idActividades) {
+        boolean valid = true;
+        String query = "select * from notas " +
+                "join actividades on actividades.idActividades = notas.idActividades " +
+                "where notas.idActividades = " + idActividades;
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            if (rs.next()) {                 
+                valid = false;
+                JOptionPane.showMessageDialog(null, "Las notas de esta actividad ya han sido registradas");
+            } 
+            con.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        return valid;
     }
 
 }
