@@ -24,7 +24,7 @@ public class Utileria {
         Dimension jInternalFrameSize = internalFrame.getSize();
         int width=(desktopSize.width - jInternalFrameSize.width)/2;
         int height=(desktopSize.height-40- jInternalFrameSize.height)/2;
-        internalFrame.setLocation(width, height);
+        internalFrame.setLocation(width, 0);
         internalFrame.setVisible(true);
     }
 }
