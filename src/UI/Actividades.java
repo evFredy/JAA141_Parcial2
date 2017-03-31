@@ -5,7 +5,15 @@
  */
 package UI;
 
+import Model.Actividad;
 import Model.Docente;
+import Model.Materia;
+import Model.Periodo;
+import gb090091_hs110065.ActividadesTableModel;
+import gb090091_hs110065.conexion;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,12 +21,52 @@ import Model.Docente;
  */
 public class Actividades extends javax.swing.JInternalFrame {
     Docente _gDocente;
+    List<Materia> _gMaterias;
+    List<Periodo> _gPeriodos;
+    int _gidMateriaSeleccionada;
+    int _gidPeriodoSeleccionado;
+    ActividadesTableModel SourceActividades;
     /**
      * Creates new form Actividades
      */
     public Actividades(Docente _gDocente) {
         initComponents();
         this._gDocente = _gDocente;
+        this.jbcMateria1.setModel(new javax.swing.DefaultComboBoxModel<>(this.getMaterias()));
+        this.jbcPeriodo1.setEnabled(false);
+        this.jbtnagregar.setEnabled(false);
+        this.jTableActividades.setModel(SourceActividades = new ActividadesTableModel() );
+    }
+    
+    public String[] getMaterias() {
+        conexion con = new conexion();
+        _gMaterias = con.getListaMateriasDocente(_gDocente.getIdDocente());
+        String[] Result = new String[_gMaterias.size() + 1];
+        Result[0] = "Seleccione";
+        for (int i = 1; i < _gMaterias.size() + 1; i++) {
+            Result[i] = _gMaterias.get(i - 1).getNombre();
+        }
+        return Result;
+    }
+    
+    public String[] getPeriodos() {
+        if (jbcMateria1.getSelectedIndex() != 0) {
+            jbtnagregar.setEnabled(false);
+            _gidMateriaSeleccionada = _gMaterias.stream().filter(par -> par.getNombre().equals(jbcMateria1.getSelectedItem())).findFirst().get().getIdMateria();
+            jbcPeriodo1.setEnabled(true);
+            conexion con = new conexion();
+            _gPeriodos = con.getListaPeriodoMateriasDocente(_gDocente.getIdDocente(), _gidMateriaSeleccionada);
+            if (_gPeriodos != null) {
+                String[] Result = new String[_gPeriodos.size() + 1];
+                Result[0] = "Seleccione";
+                for (int i = 1; i < _gPeriodos.size() + 1; i++) {
+                    Result[i] = ((Integer) _gPeriodos.get(i - 1).getNumPeriodo()).toString();
+                }
+                return Result;
+            }
+        }
+        jbcPeriodo1.setEnabled(false);
+        return new String[0];
     }
 
     /**
@@ -30,23 +78,23 @@ public class Actividades extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jbcMateria1 = new javax.swing.JComboBox<>();
+        jbcPeriodo1 = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        jTableActividades = new javax.swing.JTable();
+        jbtnagregar = new javax.swing.JButton();
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jbcMateria1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jbcPeriodo1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jLabel1.setText("Seleccione Materia");
+        jLabel1.setText("Materia");
 
-        jLabel2.setText("Seleccione Periodo");
+        jLabel2.setText("Periodo");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableActividades.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -57,9 +105,9 @@ public class Actividades extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableActividades);
 
-        jButton1.setText("Agregar Actividad");
+        jbtnagregar.setText("Agregar Actividad");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -67,41 +115,37 @@ public class Actividades extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(15, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 282, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(17, 17, 17)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(94, 94, 94)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 544, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(18, 18, 18)
+                                .addComponent(jbcMateria1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(35, 35, 35)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jbcPeriodo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jbtnagregar)))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
+                    .addComponent(jbcMateria1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jbcPeriodo1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(179, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addComponent(jbtnagregar)
+                .addContainerGap(198, Short.MAX_VALUE))
         );
 
         jLabel1.getAccessibleContext().setAccessibleName("");
@@ -111,12 +155,12 @@ public class Actividades extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableActividades;
+    private javax.swing.JComboBox<String> jbcMateria1;
+    private javax.swing.JComboBox<String> jbcPeriodo1;
+    private javax.swing.JButton jbtnagregar;
     // End of variables declaration//GEN-END:variables
 }
