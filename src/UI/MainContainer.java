@@ -134,7 +134,9 @@ public class MainContainer extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiIngresarNotasActionPerformed
 
     private void jmiModificarNotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModificarNotasActionPerformed
-        // TODO add your handling code here:
+        ModificarNotas notas = new ModificarNotas(_gDocente);
+        Utileria.abriVentana(notas, this.jDesktopPane1);     
+        notas.setVisible(true);/// TODO add your handling code here:
     }//GEN-LAST:event_jmiModificarNotasActionPerformed
 
     private void jmiCierreNotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCierreNotasActionPerformed

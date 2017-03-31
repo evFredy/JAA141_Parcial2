@@ -16,14 +16,24 @@ public class EstudianteNotas {
     String Apellidos;
     Float Valor;    
     int idEstudiante;
+    Integer idNotas;
 
-    public EstudianteNotas(String Corr, String Carnet, String Nombres, String Apellidos, Float Valor, int idEstudiante) {
+    public EstudianteNotas(String Corr, String Carnet, String Nombres, String Apellidos, Float Valor, int idEstudiante, Integer idNotas) {
         this.Corr = Corr;
         this.Carnet = Carnet;
         this.Nombres = Nombres;
         this.Apellidos = Apellidos;
         this.Valor = Valor;
         this.idEstudiante = idEstudiante;
+        this.idNotas = idNotas;
+    }
+
+    public Integer getIdNotas() {
+        return idNotas;
+    }
+
+    public void setIdNotas(Integer idNotas) {
+        this.idNotas = idNotas;
     }
 
     public String getCorr() {

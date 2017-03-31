@@ -150,7 +150,7 @@ public class conexion {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
             while (rs.next()) {
-                EstudianteNotas Aux = new EstudianteNotas(i.toString(), rs.getString("Carnet"), rs.getString("Nombres"), rs.getString("Apellidos"), null, rs.getInt("idEstudiante"));
+                EstudianteNotas Aux = new EstudianteNotas(i.toString(), rs.getString("Carnet"), rs.getString("Nombres"), rs.getString("Apellidos"), null, rs.getInt("idEstudiante"), null);
                 lista.add(Aux);
                 i++;
             }
@@ -209,7 +209,7 @@ public class conexion {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
             if (rs.next()) {                 
-                valid = false;
+                valid = false;                
                 JOptionPane.showMessageDialog(null, "Las notas de esta actividad ya han sido registradas");
             } 
             con.close();
@@ -217,6 +217,81 @@ public class conexion {
             System.out.println(ex.toString());
         }
         return valid;
+    }
+    
+    public boolean checkNotasRegistradasModificar(int idActividades) {
+        boolean valid = false;
+        String query = "select * from notas " +
+                "join actividades on actividades.idActividades = notas.idActividades " +
+                "where notas.idActividades = " + idActividades;
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            if (rs.next()) {                 
+                valid = true;                
+            } 
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Aun no hay notas registradas para esta actividad");
+            }
+            con.close();
+        } catch (Exception ex) {
+            System.out.println(ex.toString());
+        }
+        return valid;
+    }
+
+    public List<EstudianteNotas> getEstudiantesMateriaDocenteModificar(int idMateria,int idActividad) {
+        List<EstudianteNotas> lista = new ArrayList<EstudianteNotas>();
+        String query = "select usuario.User as Carnet, estudiante.Nombres, estudiante.Apellidos, estudiante.idEstudiante, notas.Valor, notas.idNotas from estudiante " +
+                "inner join usuario on usuario.idUsuario = estudiante.idUsuuario " +
+                "inner join estudiantemateria on estudiantemateria.idEstudiante = estudiante.idEstudiante " +
+                "inner join actividades on actividades.idMateria = estudiantemateria.idMateria " +
+                "inner join notas on notas.idEstudiante = estudiante.idEstudiante " +
+                "where estudiantemateria.idMateria = '"+idMateria+"' and actividades.idActividades = '"+ idActividad+"'";
+        Integer i = 0;
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                EstudianteNotas Aux = new EstudianteNotas(i.toString(), rs.getString("Carnet"), rs.getString("Nombres"), rs.getString("Apellidos"), rs.getFloat("Valor"), rs.getInt("idEstudiante"),rs.getInt("idNotas"));
+                lista.add(Aux);
+                i++;
+            }
+            con.close();
+            if (lista.size() == 0) {
+                return null;
+            }
+            return lista;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return null;
+    }
+
+    public void setEstudiantesNotasModificar(List<Notas> NotasEstudiantes) {
+        if (NotasEstudiantes.size() < 0) {
+            return;
+        }
+
+        try {
+            PreparedStatement pstmt = con.prepareStatement(
+                    "update Notas set valor = ? where idNotas = ?");
+            for (Notas nota : NotasEstudiantes) {
+                pstmt.setFloat(1, nota.getValor());
+                pstmt.setInt(2, nota.getIdNotas());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            JOptionPane.showMessageDialog(null,  "Error al Guardar Notas, Codigo: " + ex.getErrorCode());
+            return;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,"Error Desconocido Contante a Soporte Tecnico");
+            return;
+        }        
+        JOptionPane.showMessageDialog(null,"Notas Guardadas");
     }
 
 }

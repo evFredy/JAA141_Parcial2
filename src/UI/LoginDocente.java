@@ -108,10 +108,7 @@ public class LoginDocente extends javax.swing.JFrame {
         if (_gDocente != null) {
             this.setVisible(false);   
             new MainContainer(_gDocente).setVisible(true);
-        }
-        else
-        {
-            
+            this.dispose();
         }
     }//GEN-LAST:event_jbtnIngresarActionPerformed
 
