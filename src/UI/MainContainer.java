@@ -144,7 +144,8 @@ public class MainContainer extends javax.swing.JFrame {
 
     private void jmiCrearActividadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCrearActividadesActionPerformed
         Actividades act = new Actividades(_gDocente);
-        //Utileria.abriVentana(act, this.jDesktopPane1);        // TODO add your handling code here:
+        Utileria.abriVentana(act, this.jDesktopPane1);     
+        act.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_jmiCrearActividadesActionPerformed
 
 

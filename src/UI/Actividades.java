@@ -11,7 +11,7 @@ import Model.Docente;
  *
  * @author SISTOP
  */
-public class Actividades extends javax.swing.JFrame {
+public class Actividades extends javax.swing.JInternalFrame {
     Docente _gDocente;
     /**
      * Creates new form Actividades
