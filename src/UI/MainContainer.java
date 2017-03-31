@@ -17,7 +17,10 @@ public class MainContainer extends javax.swing.JFrame {
      * Creates new form MainContainer
      */
     public MainContainer(Docente _gDocente) {
-        initComponents();   
+        initComponents(); 
+        if (_gDocente == null) {
+            this.dispose();
+        }
     }
 
     /**
