@@ -18,6 +18,8 @@ public class LoginDocente extends javax.swing.JFrame {
      */
     public LoginDocente() {
         initComponents();
+        jTextField1.setText("GB090091");
+        jpwPassword.setText("hola123");
     }
 
     /**
@@ -98,7 +100,7 @@ public class LoginDocente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnIngresarActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here:        
         conexion con = new conexion();
         String nombre=jTextField1.getText();
         String pass = new String(jpwPassword.getPassword());  

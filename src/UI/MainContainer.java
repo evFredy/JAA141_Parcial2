@@ -23,6 +23,7 @@ public class MainContainer extends javax.swing.JFrame {
             this.dispose();
         }
         this._gDocente = _gDocente;
+        this.setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
     }
 
     /**
@@ -127,7 +128,9 @@ public class MainContainer extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jmiIngresarNotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiIngresarNotasActionPerformed
-       // TODO add your handling code here:
+        RegistroNotas notas = new RegistroNotas(_gDocente);
+        Utileria.abriVentana(notas, this.jDesktopPane1);     
+        notas.setVisible(true);// TODO add your handling code here:// TODO add your handling code here:
     }//GEN-LAST:event_jmiIngresarNotasActionPerformed
 
     private void jmiModificarNotasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiModificarNotasActionPerformed
