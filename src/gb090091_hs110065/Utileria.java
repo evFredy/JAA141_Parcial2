@@ -15,7 +15,7 @@ import javax.swing.JInternalFrame;
  * @author wilver
  */
 public class Utileria {    
-    public void abriVentana(JInternalFrame internalFrame, JDesktopPane jdpContenedor)
+    public static void abriVentana(JInternalFrame internalFrame, JDesktopPane jdpContenedor)
     {
         jdpContenedor.add(internalFrame);
         //Dimension desktopSize = jdpContenedor.getSize();
