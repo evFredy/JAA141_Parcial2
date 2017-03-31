@@ -87,6 +87,11 @@ public class Actividades extends javax.swing.JInternalFrame {
         jbtnagregar = new javax.swing.JButton();
 
         jbcMateria1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jbcMateria1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbcMateria1ActionPerformed(evt);
+            }
+        });
 
         jbcPeriodo1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -152,6 +157,10 @@ public class Actividades extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jbcMateria1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbcMateria1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jbcMateria1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
