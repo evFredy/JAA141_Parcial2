@@ -16,13 +16,12 @@ import gb090091_hs110065.conexion;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author eleme
  */
-public class RegistroNotas extends javax.swing.JInternalFrame {
+public class ModificarNotas extends javax.swing.JInternalFrame {
 
     Docente _gDocente;
     List<Materia> _gMaterias;
@@ -31,12 +30,13 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
     int _gidMateriaSeleccionada;
     int _gidPeriodoSeleccionado;
     int _gidActividadSeleccionada;
+    boolean _gbValid = true;
     EstudianteNotasTableModel SourceEstudiantesNotas;
 
     /**
-     * Creates new form RegistroNotas
+     * Creates new form ModificarNotas
      */
-    public RegistroNotas(Docente _gDocente) {
+    public ModificarNotas(Docente _gDocente) {
         initComponents();
         this._gDocente = _gDocente;
         this.jcbMateria.setModel(new javax.swing.DefaultComboBoxModel<>(this.getMaterias()));
@@ -45,22 +45,21 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         this.jbtnProcesar.setEnabled(false);
         this.jTableEstudianteNotas.setModel(SourceEstudiantesNotas = new EstudianteNotasTableModel());
     }
-
-    public List<EstudianteNotas> getEstudianteNotas() {
+    
+     public List<EstudianteNotas> getEstudianteNotasModificar() {
         if (_gActividades != null) {
-            conexion con = new conexion();
-            if (con.checkNotasRegistradas(_gidActividadSeleccionada)) {
+            conexion con = new conexion();            
+            if (con.checkNotasRegistradasModificar(_gidActividadSeleccionada)) {
                 con = new conexion();
-                List<EstudianteNotas> Estudiantes = con.getEstudiantesMateriaDocente(_gidMateriaSeleccionada);
+                List<EstudianteNotas> Estudiantes = con.getEstudiantesMateriaDocenteModificar(_gidMateriaSeleccionada, _gidActividadSeleccionada);
                 if (Estudiantes != null) {
                     return Estudiantes;
                 }
-            }
-
+            }            
         }
         return null;
     }
-
+    
     public String[] getMaterias() {
         conexion con = new conexion();
         _gMaterias = con.getListaMateriasDocente(_gDocente.getIdDocente());
@@ -124,6 +123,9 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableEstudianteNotas = new javax.swing.JTable();
+        jbtnGuardar = new javax.swing.JButton();
         jcbMateria = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -131,13 +133,28 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         jcbPeriodo = new javax.swing.JComboBox<>();
         jcbActividad = new javax.swing.JComboBox<>();
         jbtnProcesar = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTableEstudianteNotas = new javax.swing.JTable();
-        jbtnGuardar = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Registro de Notas");
+        setTitle("Modificar Notas de Estudiantes");
+
+        jTableEstudianteNotas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jTableEstudianteNotas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(jTableEstudianteNotas);
+
+        jbtnGuardar.setText("Guardar");
+        jbtnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnGuardarActionPerformed(evt);
+            }
+        });
 
         jcbMateria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,24 +187,6 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
             }
         });
 
-        jTableEstudianteNotas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        jTableEstudianteNotas.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(jTableEstudianteNotas);
-
-        jbtnGuardar.setText("Guardar");
-        jbtnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbtnGuardarActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -212,7 +211,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jbtnGuardar)))
                 .addContainerGap())
@@ -220,7 +219,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jcbMateria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
@@ -230,14 +229,31 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3)
                     .addComponent(jbtnProcesar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbtnGuardar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jbtnGuardar))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        SourceEstudiantesNotas.fireTableDataChanged();
+        List<Notas> NotasEstudiantes = new ArrayList<Notas>();
+        List<EstudianteNotas> ToSave = SourceEstudiantesNotas.getEstudiantes();
+        if (ToSave.size() == 0) return;
+        boolean Invalid = ToSave.stream().filter(par -> par.getValor() == null).findFirst().isPresent();
+        if (Invalid) {
+            JOptionPane.showMessageDialog(null, "Faltan notas por ingresar");
+        } else {
+            conexion conn = new conexion();
+            for (int i = 0; i < ToSave.size(); i++) {
+                NotasEstudiantes.add(new Notas(ToSave.get(i).getIdNotas(), _gidActividadSeleccionada, ToSave.get(i).getIdEstudiante(), ToSave.get(i).getValor()));
+            }
+            conn.setEstudiantesNotasModificar(NotasEstudiantes);
+            SourceEstudiantesNotas.clear();
+        }
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
 
     private void jcbMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbMateriaActionPerformed
         this.jcbPeriodo.setModel(new javax.swing.DefaultComboBoxModel<>(this.getPeriodos()));
@@ -248,19 +264,6 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         this.jcbActividad.setModel(new javax.swing.DefaultComboBoxModel<>(this.getActividades()));
         SourceEstudiantesNotas.clear();
     }//GEN-LAST:event_jcbPeriodoActionPerformed
-
-    private void jbtnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnProcesarActionPerformed
-        if (jcbActividad.getSelectedIndex() != 0 && jcbPeriodo.getSelectedIndex() != 0) {
-            List<EstudianteNotas> Aux = getEstudianteNotas();
-            if (Aux != null) {
-                SourceEstudiantesNotas = new EstudianteNotasTableModel(Aux);
-                jTableEstudianteNotas.setModel(SourceEstudiantesNotas);
-            } else {
-                SourceEstudiantesNotas.clear();
-            }
-        }
-
-    }//GEN-LAST:event_jbtnProcesarActionPerformed
 
     private void jcbActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbActividadActionPerformed
         if (jcbActividad.getItemCount() > 0) {
@@ -274,24 +277,17 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_jcbActividadActionPerformed
 
-    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
-        SourceEstudiantesNotas.fireTableDataChanged();
-        List<Notas> NotasEstudiantes = new ArrayList<Notas>();
-        List<EstudianteNotas> ToSave = SourceEstudiantesNotas.getEstudiantes();
-        if (ToSave.size() == 0) return;
-        boolean Invalid = ToSave.stream().filter(par -> par.getValor() == null).findFirst().isPresent();
-        if (Invalid) {
-            JOptionPane.showMessageDialog(null, "Faltan notas por ingresar");
-        } else {
-            conexion conn = new conexion();
-            for (int i = 0; i < ToSave.size(); i++) {
-                NotasEstudiantes.add(new Notas(0, _gidActividadSeleccionada, ToSave.get(i).getIdEstudiante(), ToSave.get(i).getValor()));
+    private void jbtnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnProcesarActionPerformed
+        if (jcbActividad.getSelectedIndex() != 0 && jcbPeriodo.getSelectedIndex() != 0) {
+            List<EstudianteNotas> Aux = getEstudianteNotasModificar();
+            if (Aux != null) {
+                SourceEstudiantesNotas = new EstudianteNotasTableModel(Aux);
+                jTableEstudianteNotas.setModel(SourceEstudiantesNotas);
+            } else {
+                SourceEstudiantesNotas.clear();
             }
-            conn.setEstudiantesNotas(NotasEstudiantes);            
-            SourceEstudiantesNotas.clear();
         }
-
-    }//GEN-LAST:event_jbtnGuardarActionPerformed
+    }//GEN-LAST:event_jbtnProcesarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
