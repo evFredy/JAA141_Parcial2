@@ -7,10 +7,15 @@ package UI;
 
 import Model.Actividad;
 import Model.Docente;
+import Model.EstudianteNotas;
 import Model.Materia;
+import Model.Notas;
 import Model.Periodo;
+import gb090091_hs110065.EstudianteNotasTableModel;
 import gb090091_hs110065.conexion;
+import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -25,6 +30,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
     int _gidMateriaSeleccionada;
     int _gidPeriodoSeleccionado;
     int _gidActividadSeleccionada;
+    EstudianteNotasTableModel SourceEstudiantesNotas;
 
     /**
      * Creates new form RegistroNotas
@@ -35,7 +41,19 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         this.jcbMateria.setModel(new javax.swing.DefaultComboBoxModel<>(this.getMaterias()));
         this.jcbPeriodo.setEnabled(false);
         this.jcbActividad.setEnabled(false);
-        //this.jcbActividad.setModel(new javax.swing.DefaultComboBoxModel<>(this.getActividades()));
+        this.jbtnProcesar.setEnabled(false);
+        this.jTableEstudianteNotas.setModel(SourceEstudiantesNotas = new EstudianteNotasTableModel() );
+    }
+
+    public List<EstudianteNotas> getEstudianteNotas() {
+        if (_gActividades != null) {
+            conexion con = new conexion();
+            List<EstudianteNotas> Estudiantes = con.getEstudiantesMateriaDocente(_gidMateriaSeleccionada);
+            if (Estudiantes != null) {
+                return Estudiantes;
+            }
+        }
+        return null;
     }
 
     public String[] getMaterias() {
@@ -53,6 +71,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         if (jcbMateria.getSelectedIndex() != 0) {
             jcbActividad.setEnabled(false);
             jcbActividad.removeAllItems();
+            jbtnProcesar.setEnabled(false);
             _gidMateriaSeleccionada = _gMaterias.stream().filter(par -> par.getNombre().equals(jcbMateria.getSelectedItem())).findFirst().get().getIdMateria();
             jcbPeriodo.setEnabled(true);
             conexion con = new conexion();
@@ -64,7 +83,7 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
                     Result[i] = ((Integer) _gPeriodos.get(i - 1).getNumPeriodo()).toString();
                 }
                 return Result;
-            }            
+            }
         }
         jcbPeriodo.setEnabled(false);
         return new String[0];
@@ -73,7 +92,6 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
     public String[] getActividades() {
         if (jcbPeriodo.getSelectedIndex() != 0) {
             _gidPeriodoSeleccionado = _gPeriodos.stream().filter(par -> par.getNumPeriodo() == Integer.parseInt(jcbPeriodo.getSelectedItem().toString())).findFirst().get().getIdPeriodo();
-
             jcbActividad.setEnabled(true);
             conexion con = new conexion();
             _gActividades = con.getListaActividadPeriodoMateriasDocente(_gDocente.getIdDocente(), _gidPeriodoSeleccionado, _gidMateriaSeleccionada);
@@ -87,9 +105,11 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
             }
 
         }
+        jbtnProcesar.setEnabled(false);
         jcbActividad.setEnabled(false);
         return new String[0];
-    }
+    }   
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -107,6 +127,9 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
         jcbPeriodo = new javax.swing.JComboBox<>();
         jcbActividad = new javax.swing.JComboBox<>();
         jbtnProcesar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableEstudianteNotas = new javax.swing.JTable();
+        jbtnGuardar = new javax.swing.JButton();
 
         jcbMateria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,6 +162,24 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
             }
         });
 
+        jTableEstudianteNotas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jTableEstudianteNotas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(jTableEstudianteNotas);
+
+        jbtnGuardar.setText("Guardar");
+        jbtnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnGuardarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -159,6 +200,14 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jbtnProcesar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jbtnGuardar)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -172,7 +221,11 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
                     .addComponent(jcbActividad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(jbtnProcesar))
-                .addContainerGap(213, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbtnGuardar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -180,28 +233,60 @@ public class RegistroNotas extends javax.swing.JInternalFrame {
 
     private void jcbMateriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbMateriaActionPerformed
         this.jcbPeriodo.setModel(new javax.swing.DefaultComboBoxModel<>(this.getPeriodos()));
+        SourceEstudiantesNotas.clear();
     }//GEN-LAST:event_jcbMateriaActionPerformed
 
     private void jcbPeriodoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbPeriodoActionPerformed
         this.jcbActividad.setModel(new javax.swing.DefaultComboBoxModel<>(this.getActividades()));
+        SourceEstudiantesNotas.clear();
     }//GEN-LAST:event_jcbPeriodoActionPerformed
 
     private void jbtnProcesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnProcesarActionPerformed
-                // TODO add your handling code here:
+        if (jcbActividad.getSelectedIndex() != 0 && jcbPeriodo.getSelectedIndex() != 0) {
+            List<EstudianteNotas> Aux = getEstudianteNotas();
+            if (Aux != null) {
+                SourceEstudiantesNotas = new EstudianteNotasTableModel(getEstudianteNotas());
+                jTableEstudianteNotas.setModel(SourceEstudiantesNotas);
+            } 
+            else
+            {
+                SourceEstudiantesNotas.clear();
+            }
+        }
+
     }//GEN-LAST:event_jbtnProcesarActionPerformed
 
     private void jcbActividadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbActividadActionPerformed
-        if (jcbActividad.getSelectedIndex() != 0) {
-            _gidActividadSeleccionada = _gActividades.stream().filter(o -> o.getNombre().equals(jcbActividad.getSelectedItem().toString())).findFirst().get().getIdActividades();
+        if (jcbActividad.getItemCount() > 0) {
+            if (jcbActividad.getSelectedIndex() != 0) {
+                _gidActividadSeleccionada = _gActividades.stream().filter(o -> o.getNombre().equals(jcbActividad.getSelectedItem().toString())).findFirst().get().getIdActividades();
+                jbtnProcesar.setEnabled(true);
+            } else {
+                jbtnProcesar.setEnabled(false);
+                SourceEstudiantesNotas.clear();
+            }
         }
-        // TODO add your handling code here:
     }//GEN-LAST:event_jcbActividadActionPerformed
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnGuardarActionPerformed
+        SourceEstudiantesNotas.fireTableDataChanged();
+        List<Notas> NotasEstudiantes = new ArrayList<Notas>(); 
+        List<EstudianteNotas> ToSave = SourceEstudiantesNotas.getEstudiantes();
+        conexion conn = new conexion();
+        for (int i = 0; i < ToSave.size(); i++) {
+            NotasEstudiantes.add(new Notas(0,_gidActividadSeleccionada,ToSave.get(i).getIdEstudiante(),ToSave.get(i).getValor()));
+        }
+        String msg = conn.setEstudiantesNotas(NotasEstudiantes);
+    }//GEN-LAST:event_jbtnGuardarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTableEstudianteNotas;
+    private javax.swing.JButton jbtnGuardar;
     private javax.swing.JButton jbtnProcesar;
     private javax.swing.JComboBox<String> jcbActividad;
     private javax.swing.JComboBox<String> jcbMateria;
