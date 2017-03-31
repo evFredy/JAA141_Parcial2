@@ -295,6 +295,42 @@ public class conexion {
     }
     
     
-    
+    public void setActividades(List<Actividad> actividades) {
+        if (actividades.size() < 0) {
+            return;
+        }
+        String query = "select Max(actividades.idActividades) as corr from actividades";
+        int corr = 0;
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            while (rs.next()) {
+                corr = rs.getInt("corr");
+                corr++;
+            }
+
+            PreparedStatement pstmt = con.prepareStatement(
+                    "INSERT INTO actividades(idActividades,idMateria,idDocente, nombre, descripcion, porcentaje, idPeriodo) VALUES( ?, ?, ?, ?, ? ,? , ?)");
+            for (Actividad act : actividades) {
+                pstmt.setInt(1, corr++);
+                pstmt.setInt(2, act.getIdMateria());
+                pstmt.setInt(3, act.getIdDocente());
+                pstmt.setString(4, act.getNombre());
+                pstmt.setString(5, act.getDescripcion());
+                pstmt.setInt(6, act.getPorcentaje());
+                pstmt.setInt(7, act.getIdPeriodo());
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();            
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            JOptionPane.showMessageDialog(null,  "Error al Guardar Actividades, Codigo: " + ex.getErrorCode());
+            return;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,"Error Desconocido Contante a Soporte Tecnico");
+            return;
+        }        
+        JOptionPane.showMessageDialog(null,"Actividades guardadas");
+    }
 
 }

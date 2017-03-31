@@ -14,6 +14,7 @@ import gb090091_hs110065.conexion;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,6 +37,7 @@ public class Actividades extends javax.swing.JInternalFrame {
         this.jbcPeriodo1.setEnabled(false);
         this.jbtnagregar.setEnabled(false);
         this.jTableActividades.setModel(SourceActividades = new ActividadesTableModel() );
+        
     }
     
     public String[] getMaterias() {
@@ -161,11 +163,25 @@ public class Actividades extends javax.swing.JInternalFrame {
 
     private void jbcMateria1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbcMateria1ActionPerformed
         // TODO add your handling code here:
+        this.jbcPeriodo1.setModel(new javax.swing.DefaultComboBoxModel<>(this.getPeriodos()));
     }//GEN-LAST:event_jbcMateria1ActionPerformed
 
     private void jbtnagregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnagregarActionPerformed
         // TODO add your handling code here:
-        
+        List<Actividad> actividades = new ArrayList<Actividad>();
+         actividades = SourceActividades.getActividad();
+         if (actividades.size() == 0) return;
+        boolean Invalid = actividades.stream().filter(par -> par.getDescripcion()== null || par.getNombre() == null ).findFirst().isPresent();
+        if (Invalid) {
+            JOptionPane.showMessageDialog(null, "Faltan datos que ingresar");
+        } else {
+            conexion conn = new conexion();
+            for (int i = 0; i < actividades.size(); i++) {
+                actividades.add(new Actividad(0, _gidMateriaSeleccionada, _gDocente.getIdDocente(), actividades.get(i).getNombre(), actividades.get(i).getDescripcion() , actividades.get(i).getPorcentaje(), _gidPeriodoSeleccionado));
+            }
+            conn.setActividades(actividades);            
+            
+        }
     }//GEN-LAST:event_jbtnagregarActionPerformed
 
 

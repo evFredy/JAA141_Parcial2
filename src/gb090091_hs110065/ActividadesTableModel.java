@@ -86,5 +86,6 @@ public class ActividadesTableModel extends AbstractTableModel {
         }
         fireTableCellUpdated(row, col);
     }
+    
 }
 
